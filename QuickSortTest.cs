@@ -7,79 +7,116 @@ public class QuickSortTests
     [Test]
     public void TestEmptyArray()
     {
-        // Arrange
         int[] input = new int[0];
-
-        // Act
         QuickSort.Sort(input);
-
-        // Assert
         CollectionAssert.AreEqual(new int[0], input);
     }
 
     [Test]
     public void TestSingleElementArray()
     {
-        // Arrange
         int[] input = { 5 };
-
-        // Act
         QuickSort.Sort(input);
-
-        // Assert
         CollectionAssert.AreEqual(new int[] { 5 }, input);
     }
 
     [Test]
     public void TestAlreadySortedArray()
     {
-        // Arrange
         int[] input = { 1, 2, 3, 4, 5 };
-
-        // Act
         QuickSort.Sort(input);
-
-        // Assert
         CollectionAssert.AreEqual(new int[] { 1, 2, 3, 4, 5 }, input);
     }
 
     [Test]
     public void TestReverseSortedArray()
     {
-        // Arrange
         int[] input = { 5, 4, 3, 2, 1 };
-
-        // Act
         QuickSort.Sort(input);
-
-        // Assert
         CollectionAssert.AreEqual(new int[] { 1, 2, 3, 4, 5 }, input);
     }
 
     [Test]
     public void TestDuplicateElements()
     {
-        // Arrange
-        int[] input = { 5, 2, 8, 1, 9, 4, 7, 6, 3 };
-
-        // Act
+        int[] input = { 5, 2, 8, 1, 9, 5, 2, 4, 7, 6, 3 };
         QuickSort.Sort(input);
-
-        // Assert
-        CollectionAssert.AreEqual(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, input);
+        CollectionAssert.AreEqual(new int[] { 1, 2, 2, 3, 4, 5, 5, 6, 7, 8, 9 }, input);
     }
 
     [Test]
     public void TestLargeArray()
     {
-        // Arrange
         Random rand = new Random();
         int[] input = Enumerable.Range(0, 10000).Select(i => rand.Next(100000)).ToArray();
+        int[] copy = (int[])input.Clone();
+        QuickSort.Sort(input);
+        Array.Sort(copy);
+        Assert.That(input, Is.EqualTo(copy));
+    }
+
+    [Test]
+    public void TestArrayWithNegativeNumbers()
+    {
+        // Arrange
+        int[] input = { -3, -1, -2, 0, 2, 1 };
 
         // Act
         QuickSort.Sort(input);
 
         // Assert
-        Array.Sort(input); // Используем стандартный метод для проверки корректности
+        CollectionAssert.AreEqual(new int[] { -3, -2, -1, 0, 1, 2 }, input);
+    }
+
+    [Test]
+    public void TestAllSameElements()
+    {
+        // Arrange
+        int[] input = { 7, 7, 7, 7, 7 };
+
+        // Act
+        QuickSort.Sort(input);
+
+        // Assert
+        CollectionAssert.AreEqual(new int[] { 7, 7, 7, 7, 7 }, input);
+    }
+
+    [Test]
+    public void TestArrayWithMinMaxValues()
+    {
+        // Arrange
+        int[] input = { int.MaxValue, 0, int.MinValue };
+
+        // Act
+        QuickSort.Sort(input);
+
+        // Assert
+        CollectionAssert.AreEqual(new int[] { int.MinValue, 0, int.MaxValue }, input);
+    }
+
+    [Test]
+    public void TestDescendingWithDuplicates()
+    {
+        // Arrange
+        int[] input = { 9, 8, 7, 7, 6, 5, 5, 4 };
+
+        // Act
+        QuickSort.Sort(input);
+
+        // Assert
+        CollectionAssert.AreEqual(new int[] { 4, 5, 5, 6, 7, 7, 8, 9 }, input);
+    }
+
+    [Test]
+    public void TestTwoElementArray()
+    {
+        // Arrange
+        int[] input = { 2, 1 };
+
+        // Act
+        QuickSort.Sort(input);
+
+        // Assert
+        CollectionAssert.AreEqual(new int[] { 1, 2 }, input);
     }
 }
