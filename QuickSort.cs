@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Drawing.Text;
 using System.IO;
-using System.Xml.Serialization;
+using System.Security.Cryptography.X509Certificates;
+using System.Xml;
 
 public class QuickSort
 {
@@ -12,13 +14,13 @@ public class QuickSort
     {
         if (array == null || array.Length == 0)
             return;
-        
+
         swapCount = 0; // Сбрасываем счётчик перед сортировкой
         ifCount = 0;
         QuickSortAlgorithm(array, 0, array.Length - 1);
-        
-        // Записываем результаты в файл
-        // LogSortResults(array.Length, swapCount);
+
+        //Записываем результаты в файл
+        LogSortResults(array.Length, swapCount, ifCount);
     }
 
     // Рекурсивный алгоритм быстрой сортировки
@@ -62,109 +64,87 @@ public class QuickSort
         swapCount++; // Увеличиваем счётчик при каждом обмене
     }
 
-    // Метод для логирования результатов
-    // private static void LogSortResults(int n, int swaps)
-    // {
-    //     string logPath = "sort_log.txt";
-    //     string header = "n\tSwaps";
-    //     string logEntry = $"{n}\t{swaps}";
+    //Метод для логирования результатов
+    private static void LogSortResults(int n, int swaps, int ifs)
+    {
+        string logPath = "sort_results.txt";
+        string header = "n\tSwaps\tIfs";
+        string logEntry = $"{n}\t{swaps}\t{ifs}";
 
-    //     // Если файл не существует, создаём его и добавляем заголовок
-    //     if (!File.Exists(logPath))
-    //     {
-    //         File.WriteAllText(logPath, header + Environment.NewLine);
-    //     }
+        // Если файл не существует, создаём его и добавляем заголовок
+        if (!File.Exists(logPath))
+        {
+            File.WriteAllText(logPath, header + Environment.NewLine);
+        }
 
-    //     // Добавляем новую запись в файл
-    //     File.AppendAllText(logPath, logEntry + Environment.NewLine);
-    // }
+        // Добавляем новую запись в файл
+        File.AppendAllText(logPath, logEntry + Environment.NewLine);
+    }
 }
 
 public class Program
 {
     public static void Main()
     {
-        // Загрузка конфигурации из XML
-        SortingConfig config = LoadConfig("sort_config.xml");
-        
-        // Инициализация логгера
-        if (File.Exists(config.Settings.LogFilePath))
+        XmlDocument xDoc = new XmlDocument();
+        xDoc.Load("sort_config.xml");
+        // получим корневой элемент
+        XmlElement? xRoot = xDoc.DocumentElement;
+
+        if (xRoot != null)
         {
-            File.WriteAllText(config.Settings.LogFilePath, "n\tSwaps\tIfs\tTime(ms)\n");
-        }
-        
-        // Обработка статических массивов
-        foreach (var arrayConfig in config.Arrays.StaticArrays)
-        {
-            TestArray(arrayConfig.GetIntArray(), config.Settings.LogFilePath);
-        }
-        
-        // Обработка случайных массивов
-        if (config.Settings.GenerateRandomArrays)
-        {
-            var random = new Random();
-            foreach (int size in config.Arrays.RandomArrays.Sizes)
+            // обход всех узлов в корневом элементе
+            foreach (XmlElement xnode in xRoot)
             {
-                int[] randomArray = GenerateRandomArray(
-                    size, 
-                    config.Arrays.RandomArrays.MinValue, 
-                    config.Arrays.RandomArrays.MaxValue);
-                
-                TestArray(randomArray, config.Settings.LogFilePath);
+                // получаем атрибут name
+                string? name = xnode.Attributes.GetNamedItem("name")?.Value;
+                int minElement = int.Parse(xnode.Attributes.GetNamedItem("minElement")?.Value);
+                int maxElement = int.Parse(xnode.Attributes.GetNamedItem("maxElement")?.Value);
+                int startLength = int.Parse(xnode.Attributes.GetNamedItem("startLength")?.Value);
+                int maxLength = int.Parse(xnode.Attributes.GetNamedItem("maxLength")?.Value);
+                int diff = int.Parse(xnode.Attributes.GetNamedItem("diff")?.Value);
+                int? repeat = int.Parse(xnode.Attributes.GetNamedItem("repeat")?.Value);
+                int znam = int.Parse(xnode.Attributes.GetNamedItem("Znamen")?.Value);
+
+                // if (name == "Arithmetic")
+                // {
+                //     for (int i = startLength; i <= maxLength; i += diff)
+                //     {
+                //         var array = GenerateRandomArray(minElement, maxElement, i);
+                //         QuickSort.Sort(array);
+                //     }
+                // }
+                // else if (name == "Geometric") {
+                //     for (int i = startLength; i <= maxLength; i *= znam) {
+                //         var array = GenerateRandomArray(minElement, maxElement, i);
+                //         QuickSort.Sort(array);
+                //     }
+                // }
+
+
+                Console.Write(name + " ");
+                Console.Write(minElement + " ");
+                Console.Write(maxElement + " ");
+                Console.Write(startLength + " ");
+                Console.Write(maxLength + " ");
+                Console.Write(diff + " ");
+                Console.Write(znam + " ");
+                Console.Write(repeat + " ");
+                Console.WriteLine();
             }
         }
-        
-        // Тестирование предварительно отсортированных массивов
-        if (config.Settings.TestPresorted)
-        {
-            foreach (int size in new[] { 100, 1000, 10000 })
-            {
-                int[] sortedArray = GenerateSortedArray(size, ascending: true);
-                TestArray(sortedArray, config.Settings.LogFilePath);
-                
-                int[] reverseSortedArray = GenerateSortedArray(size, ascending: false);
-                TestArray(reverseSortedArray, config.Settings.LogFilePath);
-            }
-        }
     }
-    
-    private static SortingConfig LoadConfig(string path)
+    private static int[] GenerateRandomArray(int minElement, int maxElement, int len)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(SortingConfig));
-        using (FileStream stream = new FileStream(path, FileMode.Open))
+        Random rand = new Random();
+        int[] array = new int[len];
+
+        for (int i = 0; i < len; i++)
         {
-            return (SortingConfig)serializer.Deserialize(stream);
-        }
-    }
-    
-    private static void TestArray(int[] array, string logPath)
-    {
-        var watch = System.Diagnostics.Stopwatch.StartNew();
-        QuickSort.Sort(array);
-        watch.Stop();
-        
-        string logEntry = $"{array.Length}\t{QuickSort.swapCount}\t{QuickSort.ifCount}\t{watch.ElapsedMilliseconds}";
-        File.AppendAllText(logPath, logEntry + Environment.NewLine);
-    }
-    
-    private static int[] GenerateRandomArray(int size, int min, int max)
-    {
-        Random rnd = new Random();
-        int[] array = new int[size];
-        for (int i = 0; i < size; i++)
-        {
-            array[i] = rnd.Next(min, max);
+            // Генерация случайного double от minElement до maxElement
+            array[i] = rand.Next(minElement, maxElement + 1);
         }
         return array;
     }
-    
-    private static int[] GenerateSortedArray(int size, bool ascending)
-    {
-        int[] array = new int[size];
-        for (int i = 0; i < size; i++)
-        {
-            array[i] = ascending ? i : size - i;
-        }
-        return array;
-    }
+
 }

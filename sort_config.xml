@@ -1,31 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SortingTasks>
-  <Settings>
-    <LogFilePath>sort_results.txt</LogFilePath>
-    <GenerateRandomArrays>true</GenerateRandomArrays>
-    <TestPresorted>true</TestPresorted>
-  </Settings>
-  
-  <Arrays>
-    <!-- Статические массивы для тестирования -->
-    <Array>
-      <Values>10, 7, 8, 9, 1, 5</Values>
-    </Array>
-    <Array>
-      <Values>1, 2, 3, 4, 5</Values>
-    </Array>
-    <Array>
-      <Values>5, 4, 3, 2, 1</Values>
-    </Array>
-    
-    <!-- Диапазоны для генерации случайных массивов -->
-    <RandomArrays>
-      <Size>10</Size>
-      <Size>100</Size>
-      <Size>1000</Size>
-      <Size>10000</Size>
-      <MinValue>1</MinValue>
-      <MaxValue>1000</MaxValue>
-    </RandomArrays>
-  </Arrays>
-</SortingTasks>
+<experiment name="QSort">
+	<nodes name="Arithmetic" minElement="0" maxElement="20" startLength="10000" diff="100" Znamen="0" maxLength="30000" repeat="2">
+	</nodes>
+	<nodes name="Arithmetic" minElement="0" maxElement="20" startLength="10" diff="5" Znamen="0" maxLength="20" repeat="2">
+	</nodes>
+	<nodes name="Arithmetic" minElement="0" maxElement="20" startLength="10" diff="5" Znamen="0" maxLength="20" repeat="2">
+	</nodes>
+	<nodes name="Geometric" minElement="0" maxElement="20" startLength="10" diff="0" Znamen="2" maxLength="40" repeat="2">
+	</nodes>
+	<nodes name="Geometric" minElement="0" maxElement="20" startLength="10" diff="0" Znamen="5" maxLength="50" repeat="2">
+	</nodes>
+</experiment>
