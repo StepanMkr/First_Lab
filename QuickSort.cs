@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Drawing.Text;
 using System.IO;
+using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 public class QuickSort
 {
-    public static int swapCount; // Счётчик обменов
-    public static int ifCount;   // Счётчик операторов if
+    public static BigInteger swapCount; // Счётчик обменов
+    public static BigInteger ifCount;   // Счётчик операторов if
 
     // Основной метод для вызова сортировки
     public static void Sort(int[] array)
@@ -65,7 +66,7 @@ public class QuickSort
     }
 
     //Метод для логирования результатов
-    private static void LogSortResults(int n, int swaps, int ifs)
+    private static void LogSortResults(int n, BigInteger swaps, BigInteger ifs)
     {
         string logPath = "sort_results.txt";
         string header = "n\tSwaps\tIfs";
@@ -106,31 +107,31 @@ public class Program
                 int? repeat = int.Parse(xnode.Attributes.GetNamedItem("repeat")?.Value);
                 int znam = int.Parse(xnode.Attributes.GetNamedItem("Znamen")?.Value);
 
-                // if (name == "Arithmetic")
-                // {
-                //     for (int i = startLength; i <= maxLength; i += diff)
-                //     {
-                //         var array = GenerateRandomArray(minElement, maxElement, i);
-                //         QuickSort.Sort(array);
-                //     }
-                // }
-                // else if (name == "Geometric") {
-                //     for (int i = startLength; i <= maxLength; i *= znam) {
-                //         var array = GenerateRandomArray(minElement, maxElement, i);
-                //         QuickSort.Sort(array);
-                //     }
-                // }
+                if (name == "Arithmetic")
+                {
+                    for (int i = startLength; i <= maxLength; i += diff)
+                    {
+                        var array = GenerateRandomArray(minElement, maxElement, i);
+                        QuickSort.Sort(array);
+                    }
+                }
+                else if (name == "Geometric") {
+                    for (int i = startLength; i <= maxLength; i *= znam) {
+                        var array = GenerateRandomArray(minElement, maxElement, i);
+                        QuickSort.Sort(array);
+                    }
+                }
 
 
-                Console.Write(name + " ");
-                Console.Write(minElement + " ");
-                Console.Write(maxElement + " ");
-                Console.Write(startLength + " ");
-                Console.Write(maxLength + " ");
-                Console.Write(diff + " ");
-                Console.Write(znam + " ");
-                Console.Write(repeat + " ");
-                Console.WriteLine();
+                // Console.Write(name + " ");
+                // Console.Write(minElement + " ");
+                // Console.Write(maxElement + " ");
+                // Console.Write(startLength + " ");
+                // Console.Write(maxLength + " ");
+                // Console.Write(diff + " ");
+                // Console.Write(znam + " ");
+                // Console.Write(repeat + " ");
+                // Console.WriteLine();
             }
         }
     }
