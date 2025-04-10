@@ -24,6 +24,19 @@ public class QuickSort
         LogSortResults(array.Length, swapCount, ifCount);
     }
 
+    public static int[] GenerateRandomArray(int minElement, int maxElement, int len)
+    {
+        Random rand = new Random();
+        int[] array = new int[len];
+
+        for (int i = 0; i < len; i++)
+        {
+            // Генерация случайного double от minElement до maxElement
+            array[i] = rand.Next(minElement, maxElement + 1);
+        }
+        return array;
+    }
+
     // Рекурсивный алгоритм быстрой сортировки
     private static void QuickSortAlgorithm(int[] array, int left, int right)
     {
@@ -111,13 +124,13 @@ public class Program
                 {
                     for (int i = startLength; i <= maxLength; i += diff)
                     {
-                        var array = GenerateRandomArray(minElement, maxElement, i);
+                        var array = QuickSort.GenerateRandomArray(minElement, maxElement, i);
                         QuickSort.Sort(array);
                     }
                 }
                 else if (name == "Geometric") {
                     for (int i = startLength; i <= maxLength; i *= znam) {
-                        var array = GenerateRandomArray(minElement, maxElement, i);
+                        var array = QuickSort.GenerateRandomArray(minElement, maxElement, i);
                         QuickSort.Sort(array);
                     }
                 }
@@ -134,18 +147,6 @@ public class Program
                 // Console.WriteLine();
             }
         }
+        Console.WriteLine("Массовая задача успешно завершена. Результаты можно посмотреть в фалйле sort_result.txt");
     }
-    private static int[] GenerateRandomArray(int minElement, int maxElement, int len)
-    {
-        Random rand = new Random();
-        int[] array = new int[len];
-
-        for (int i = 0; i < len; i++)
-        {
-            // Генерация случайного double от minElement до maxElement
-            array[i] = rand.Next(minElement, maxElement + 1);
-        }
-        return array;
-    }
-
 }
